@@ -1,32 +1,225 @@
-<!-- Стартова сторінка учня. Копіюється в ~/www/index.html при створенні акаунта.
-     Заняття 01: замінити назву продукту й ім'я, далі сторінка розвивається сама. -->
 <!doctype html>
 <html lang="uk">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Скоро тут буде сервіс — Андрій</title>
+<meta name="description" content="Сторінка Андрія: що вмію, чого хочу навчитися, улюблені ігри">
+<title>Андрій</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
 <style>
-  :root { color-scheme: light dark; }
-  body {
-    margin: 0; min-height: 100vh; display: grid; place-items: center;
-    font-family: system-ui, sans-serif; background: #f1f4f6; color: #131a21;
+  :root {
+    --bg: #18212c;
+    --bg-line: rgba(255, 255, 255, 0.045);
+    --panel: #223041;
+    --tile: #2b3b4f;
+    --line: #3a4d64;
+    --text: #ece7da;
+    --muted: #a9b8c9;
+    --accent: #f0b64a;
+
+    --display: "Unbounded", "Trebuchet MS", system-ui, sans-serif;
+    --body: "Golos Text", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   }
-  @media (prefers-color-scheme: dark) { body { background: #11161a; color: #e7ecef; } }
-  main { max-width: 34rem; padding: 2rem; text-align: center; }
-  h1 { font-size: 1.9rem; margin: 0 0 .6rem; }
-  p { line-height: 1.6; opacity: .8; }
-  code { background: rgba(128,128,128,.18); padding: .1em .4em; border-radius: 3px; }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f2eee3;
+      --bg-line: rgba(35, 43, 53, 0.06);
+      --panel: #fffdf7;
+      --tile: #f5f0e2;
+      --line: #d6cdb8;
+      --text: #232b35;
+      --muted: #56616e;
+      --accent: #d99a1c;
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--body);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--text);
+    background-color: var(--bg);
+    /* тонка сітка, як на тактичній мапі */
+    background-image:
+      linear-gradient(var(--bg-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-line) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: clamp(2rem, 7vw, 5rem) clamp(1.1rem, 4vw, 2rem) 4rem;
+  }
+
+  /* ---------- Верх сторінки ---------- */
+  .hero { margin-bottom: clamp(2rem, 6vw, 3.5rem); }
+
+  h1 {
+    margin: 0 0 1.25rem;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(2.8rem, 11vw, 5.5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .lead {
+    margin: 0;
+    max-width: 34rem;
+    padding-left: 1.1rem;
+    border-left: 4px solid var(--accent);
+    font-size: clamp(1.1rem, 2.6vw, 1.3rem);
+    line-height: 1.6;
+  }
+
+  /* ---------- Панелі ---------- */
+  .panel {
+    position: relative;
+    padding: 1.5rem 1.5rem 1.6rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+
+  /* кутові позначки, як у рамці інтерфейсу гри */
+  .panel::before,
+  .panel::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 3px solid var(--accent);
+    pointer-events: none;
+  }
+  .panel::before { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
+  .panel::after  { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
+
+  h2 {
+    margin: 0 0 0.75rem;
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 1.05rem;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  .panel p { margin: 0; color: var(--muted); }
+
+  .columns {
+    display: grid;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  @media (min-width: 760px) {
+    .columns { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ---------- Ігри ---------- */
+  .games-list {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .games-list { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .games-list li {
+    background: var(--tile);
+    border-left: 5px solid var(--tint);
+    border-radius: 2px;
+    transition: background-color 0.15s ease, border-left-width 0.15s ease;
+  }
+
+  .games-list li:hover,
+  .games-list li:focus-within {
+    background: var(--line);
+    border-left-width: 9px;
+  }
+
+  .games-list a {
+    display: block;
+    padding: 0.95rem 1rem;
+    color: inherit;
+    text-decoration: none;
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  .games-list a:hover,
+  .games-list a:focus-visible {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .games-list li { transition: none; }
+  }
+
+  .rimworld  { --tint: #d0693c; }
+  .hoi4      { --tint: #8fa04a; }
+  .readyornot { --tint: #5f93c8; }
+
+  /* ---------- Доступність ---------- */
+  :focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 420px) {
+    .panel { padding: 1.25rem 1.1rem 1.35rem; }
+  }
 </style>
 </head>
 <body>
 <main>
-  <h1>Скоро тут буде сервіс</h1>
-  <p>Це стартова сторінка учня <code>andrii.g11</code>.</p>
-  <p>
-    На занятті 01 заміни заголовок на назву свого продукту й додай своє ім'я —
-    саме це перевіряє автоматична перевірка. Прізвище не пиши: сторінка публічна.
-  </p>
+  <header class="hero">
+    <h1>Андрій</h1>
+    <p class="lead">Мені 16 років. Найбільше мені цікаво, як ігри влаштовані зсередини:
+    чому персонаж рухається саме так і звідки береться рахунок на екрані.</p>
+  </header>
+
+  <div class="columns">
+    <section class="panel">
+      <h2>Що я вже вмію</h2>
+      <p>Пишу невеликі програми на Python: калькулятор, гру «вгадай число»
+      і програму, яка рахує середній бал за оцінками з файлу.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Чого хочу навчитися</h2>
+      <p>Зробити сервіс, який працює в інтернеті цілодобово, щоб ним міг
+      користуватися хтось, крім мене. Ще хочу навчитися сам запускати його на
+      сервері й знаходити причину, коли він перестає відповідати.</p>
+    </section>
+  </div>
+
+  <section class="panel">
+    <h2>Улюблені ігри</h2>
+    <ul class="games-list">
+      <li class="rimworld"><a href="https://store.steampowered.com/app/294100/RimWorld/" target="_blank" rel="noopener noreferrer">Rimworld</a></li>
+      <li class="hoi4"><a href="https://store.steampowered.com/app/394360/Hearts_of_Iron_IV/" target="_blank" rel="noopener noreferrer">HOI 4</a></li>
+      <li class="readyornot"><a href="https://store.steampowered.com/app/1144200/Ready_or_Not/" target="_blank" rel="noopener noreferrer">Ready Or Not</a></li>
+    </ul>
+  </section>
 </main>
 </body>
 </html>
