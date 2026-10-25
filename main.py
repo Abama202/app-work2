@@ -17,6 +17,22 @@ CFG = yaml.safe_load((BASE / "project.yaml").read_text(encoding="utf-8"))
 
 app = FastAPI(title=CFG["product"]["name"])
 
+from contextlib import asynccontextmanager
+from pathlib import Path
+import yaml
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+import bot
+from db import query  # готова заготовка, не редагуємо
+BASE = Path(__file__).parent
+CFG = yaml.safe_load((BASE / "project.yaml").read_text(encoding="utf-8"))
+@asynccontextmanager
+async def lifespan(app):
+    stop = bot.start_polling()              # бот живе стільки ж, скільки служба
+    yield
+    if stop:
+        stop.set()
+app = FastAPI(title=CFG["product"]["name"], lifespan=lifespan)
 
 @app.get("/api/ping")
 def ping():
